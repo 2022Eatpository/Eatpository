@@ -37,11 +37,12 @@ function SignUpPage(setToken:any){
       alert('비밀번호는 8글자 이상으로 설정하십시오.');
     }
     else {
-      signUpAPI(userid,userphone, password )
+      signUpAPI(userid,password,userphone )
       .then((response) => {
         if (response !== '') {
           setToken(response);
           alert('회원가입 성공!!!');
+          
          
           setUserid('');
           setPassword('');

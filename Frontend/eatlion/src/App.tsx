@@ -4,9 +4,9 @@ import SignUpPage from './signUp';
 import signUpAPI from './API/signUpAPI';
 const App=()=> {
   return (
-    <section>
+    <div>
 <SignUpPage />
-    </section>
+    </div>
   );
 }
 
