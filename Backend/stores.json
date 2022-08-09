@@ -1,0 +1,24 @@
+[
+	{
+		"id": "12771116",
+		"store_name": "카미야",
+		"main_menu": "음식점",
+		"address": "서울 마포구 와우산로21길 28-6",
+		"longitude": "126.9223637900431",
+		"latitude": "37.552582876796265",
+		"time": 0,
+		"phone_number": "",
+		"image": 0
+	},
+	{
+		"id": "21410206",
+		"store_name": "하카타분코",
+		"main_menu": "음식점",
+		"address": "서울 마포구 독막로19길 43",
+		"longitude": "126.92379574116",
+		"latitude": "37.5488915191848",
+		"time": 0,
+		"phone_number": "",
+		"image": 0
+	}
+]
