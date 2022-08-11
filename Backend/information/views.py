@@ -1,5 +1,6 @@
 from information.serializers import InformationSerializer
 from accounts.models import Users
+from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -16,6 +17,5 @@ def get_editors(request):
             return Response({"code": 200, "editors": serialized_editors.data})
         except:
             return Response({"code": 404, "message": "Cannot find categories"})
-
     else:
         return Response({"code": 400, "message": "Invalid method"})
