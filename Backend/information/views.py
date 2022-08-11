@@ -13,9 +13,9 @@ def get_editors(request):
             # list를 반환하기 위해 many=True 조건을 단다.
             serialized_editors = InformationSerializer(editors, many=True)
 
-            return Response({"editors": serialized_editors.data})
+            return Response({"code": 200, "editors": serialized_editors.data})
         except:
-            return Response({"message": "Cannot find categories"})
+            return Response({"code": 404, "message": "Cannot find categories"})
 
     else:
-        return Response({"message": "Invalid method"})
+        return Response({"code": 400, "message": "Invalid method"})
