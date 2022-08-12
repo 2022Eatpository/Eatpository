@@ -57,7 +57,7 @@ def random_store(request):
     store = StoreRandomSerializer(store)
     return Response({"random_sotre" : store.data})
 
-#가게정보
+#가게정보_
 @api_view(['GET'])
 def stores_information(request,store_id):
 
