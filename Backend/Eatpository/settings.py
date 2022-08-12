@@ -83,8 +83,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
-
 
 # CORS 세팅 (CORS_ORIGIN_WHITELIST, CORS_ALLOW_CREDENTIALS)
 CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000'
@@ -168,7 +168,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS=[
-    os.path.join(BASE_DIR,'images','static')
+    os.path.join(BASE_DIR,'static','images')
 ]
 # STATIC_ROOT 세팅
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
