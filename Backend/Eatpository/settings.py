@@ -10,15 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 from datetime import datetime
-import os, json
+import os
+import json
 from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
 from .secrets import *
+import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-#Eatpository/backend/eatpository/settings.py
-#BASE_DIR=Eatpository/backend
+# Eatpository/backend/eatpository/settings.py
+# BASE_DIR=Eatpository/backend
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -42,17 +44,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # CORS
     'corsheaders',
-    
+
     # DRF
     'rest_framework',
     'rest_framework.authtoken',
 
     # rest_auth
     'rest_auth',
-    
+
     # apps
     'accounts',
     'stores',
@@ -64,13 +66,36 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # DRF auth settings - Token으로 User 찾아오기
 REST_FRAMEWORK = {
+    # 기존에 있던 코드
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ]
+    # # 로그인 여부 확인
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
+    # # 로그인 관련 클래스
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    #     'rest_framework.authentication.SessionAuthentication',
+    #     'rest_framework.authentication.BasicAuthentication',
+    # ),
 }
 
-JWT_SECRET_KEY =  MY_SECRET_KEY
-JWT_ALGORITHM =  'HS256'
+# JWT_AUTH = {
+# 'JWT_SECRET_KEY': MY_SECRET_KEY,
+# JWT 암호화에 사용되는 알고리즘
+# 'JWT_ALGORITHM': 'HS256',
+# JWT 토큰을 갱신 여부
+# 'JWT_ALLOW_REFRESH': True,
+# # JWT 토큰의 유효 기간
+# 'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+# # JWT 토큰 갱신의 유효기간
+# 'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
+# }
+
+# JWT_SECRET_KEY =  MY_SECRET_KEY
+# JWT_ALGORITHM =  'HS256'
 
 
 MIDDLEWARE = [
@@ -83,12 +108,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
+
 ]
 
 # CORS 세팅 (CORS_ORIGIN_WHITELIST, CORS_ALLOW_CREDENTIALS)
-CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000'
-                         ,'http://localhost:3000']
+CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000', 'http://localhost:3000']
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_METHODS = (
@@ -165,10 +189,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
-
 STATIC_URL = '/static/'
-STATICFILES_DIRS=[
-    os.path.join(BASE_DIR,'static','images')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static/', 'selenium_images'),
+    os.path.join(BASE_DIR, 'stores', 'static')
+    # os.path.join(BASE_DIR, 'static', 'images'),
 ]
 # STATIC_ROOT 세팅
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
