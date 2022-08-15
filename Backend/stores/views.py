@@ -120,6 +120,7 @@ def save(request):
     )
     return redirect('edit')
 
+
 # 가게정보
 
 @api_view(['GET'])
