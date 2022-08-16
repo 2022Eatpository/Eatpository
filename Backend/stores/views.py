@@ -9,7 +9,6 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from django.http import JsonResponse
-from asyncio.windows_events import NULL
 import requests
 from .secrets import KAKAO_API_KEY
 import json
@@ -137,7 +136,7 @@ def edit(request):
 
         driver.close()
 
-        return render(request, 'index2.html', {'info': data, 'images' : image_list})
+        return render(request, 'index2.html', {'info': data, 'images': image_list})
 
 
 @api_view(['POST'])
