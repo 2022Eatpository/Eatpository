@@ -1,6 +1,6 @@
 import random
 from django.shortcuts import render
-from stores.serializers import StoreSerializer,StoreRandomSerializer,Stores_Information
+from stores.serializers import StoreSerializer, StoreRandomSerializer, Stores_Information
 from .models import Stores
 from accounts.models import Users
 from django.shortcuts import render, redirect
@@ -121,21 +121,23 @@ def edit(request):
 
         images = driver.find_elements(By.CSS_SELECTOR, ".rg_i.Q4LuWd")
 
-        for i in range(4):
+        image_list = list()
+        for i in range(5):
             try:
                 images[i].click()
-                time.sleep(2)
+                time.sleep(0.5)
                 imgUrl = driver.find_element(By.XPATH,
                                              "//*[@id='Sva75c']/div/div/div[3]/div[2]/c-wiz/div/div[1]/div[1]/div[3]/div/a/img").get_attribute('src')
-                urllib.request.urlretrieve(
-                    imgUrl, f"{img_folder_path}/{places['id']}_{i+1}.jpg")
-                print(f"Image saved: {places['id']}_{i+1}.jpg")
+                # urllib.request.urlretrieve(
+                #     imgUrl, f"{img_folder_path}/{places['id']}_{i+1}.jpg")
+                # print(f"Image saved: {places['id']}_{i+1}.jpg")
+                image_list.append(imgUrl)
             except Exception as e:
                 print(e)
 
         driver.close()
 
-        return render(request, 'index2.html', {'info': data})
+        return render(request, 'index2.html', {'info': data, 'images' : image_list})
 
 
 @api_view(['POST'])
@@ -156,6 +158,7 @@ def save(request):
         category=request.POST.get('category')
     )
     return redirect('edit')
+
 
 @api_view(['GET'])
 def stores_information(request, store_id):

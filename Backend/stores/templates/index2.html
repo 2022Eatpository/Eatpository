@@ -40,10 +40,18 @@
     <!-- <input type="file" value = "이미지1" name="image1">
     <input type="file" value = "이미지2" name="image2"> -->
     <br><br>
-    <img src="{% get_static_prefix %}{{info.id}}_1.jpg" width="200">
-    <img src="{% get_static_prefix %}{{info.id}}_2.jpg" width="200">
-    <img src="{% get_static_prefix %}{{info.id}}_3.jpg" width="200">
-    <img src="{% get_static_prefix %}{{info.id}}_4.jpg" width="200">
+    {% comment %} <img src="https://t1.daumcdn.net/cfile/tistory/996EAB3C5CFCA9252B" width="200"> {% endcomment %}
+    {% comment %} <img src="https://mp-seoul-image-production-s3.mangoplate.com/13008/sam_3497.jpg?fit=around|359:240&crop=359:240;*,*&output-format=jpg&output-quality=80" width="200"> {% endcomment %}
+    {% comment %} <img src="{{images[0]}}" width="200">
+    <img src={{images[1]}} width="200"> {% endcomment %}
+    {% comment %} <script>
+        for ( var i = 0; i < 5; i++ ) {
+          document.write(<img src={images[i]} width="200">);
+        }
+    </script> {% endcomment %}
+    {% comment %} <img src="{% get_static_prefix %}{{info.id}}_4.jpg" width="200"> {% endcomment %}
+    
+    <textarea name="info">{{images}}</textarea> 
     <br><br>
     <input type="submit" value = "식당 저장하기">
 </form>
