@@ -193,7 +193,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static/', 'selenium_images'),
-    os.path.join(BASE_DIR, 'stores', 'static')
+    # os.path.join(BASE_DIR, 'stores', 'static')
     # os.path.join(BASE_DIR, 'static', 'images'),
 ]
 # STATIC_ROOT 세팅
