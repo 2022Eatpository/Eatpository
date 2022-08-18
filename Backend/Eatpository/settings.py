@@ -19,6 +19,7 @@ import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+ROOT_DIR = os.path.dirname(BASE_DIR)
 # Eatpository/backend/eatpository/settings.py
 # BASE_DIR=Eatpository/backend
 
@@ -94,8 +95,8 @@ REST_FRAMEWORK = {
 # 'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
 # }
 
-# JWT_SECRET_KEY =  MY_SECRET_KEY
-# JWT_ALGORITHM =  'HS256'
+JWT_SECRET_KEY = MY_SECRET_KEY
+JWT_ALGORITHM = 'HS256'
 
 
 MIDDLEWARE = [
@@ -189,16 +190,20 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
-STATIC_URL = '/static/'
 
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS=[
+#     os.path.join(BASE_DIR,'static','images')
+# ]
+# # STATIC_ROOT 세팅
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static') ## 모든 정적 파일들을 한 곳으로 모아둘 경로
+
+STATIC_URL = '/static/'
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static/', 'selenium_images'),
-    # os.path.join(BASE_DIR, 'stores', 'static')
     # os.path.join(BASE_DIR, 'static', 'images'),
 ]
-# STATIC_ROOT 세팅
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 

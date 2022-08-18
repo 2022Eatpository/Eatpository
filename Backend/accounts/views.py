@@ -9,8 +9,8 @@ from rest_framework import status
 from django.http import JsonResponse
 import json
 from datetime import datetime, timedelta
-# from Eatpository.settings import JWT_ALGORITHM,JWT_SECRET_KEY
-# Create your views here.
+from Eatpository.settings import JWT_ALGORITHM, JWT_SECRET_KEY
+import jwt
 
 
 @api_view(['POST'])
@@ -21,7 +21,7 @@ def signup(request):
         username = data.get("user_id")
         password = data.get("password")
         phone_number = data.get("phone_number")
-        user = Users.objects.create(
+        user = Users.objects.create_user(
             username=username,
             password=password,
             phone_number=phone_number,
@@ -30,6 +30,12 @@ def signup(request):
         # login(request,user)
         token = Token.objects.get_or_create(user=user)
         return Response({"Token": token[0].key})
+        payload = {"username": username}
+        access_token = jwt.encode(
+            payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM).decode("utf-8")
+        # login(request,user)
+        ##token = Token.objects.get_or_create(user=user)
+        return Response({"Token": access_token})
 # def signup(request):
 #     if request.method == "GET":
 #         return render(request, 'signup.html')
