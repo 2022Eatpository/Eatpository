@@ -3,12 +3,13 @@ from django.shortcuts import render
 from stores.serializers import StoreSerializer, StoreRandomSerializer, Stores_Information, Serializers_Images
 from .models import Images, Stores
 from accounts.models import Users
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from django.http import JsonResponse
+from asyncio.windows_events import NULL
 import requests
 from .secrets import KAKAO_API_KEY
 import json
@@ -20,6 +21,8 @@ import time
 import urllib.request
 import os
 from selenium.webdriver.common.by import By
+from Eatpository.settings import SECRET_KEY
+import jwt
 
 
 @api_view(['GET'])
@@ -66,14 +69,19 @@ def selected_stores(request):
 @api_view(['GET'])
 def random_store(request):
     try:
-        token = request.META['HTTP_AUTHORIZATION']
+        access_token = request.META['HTTP_AUTHORIZATION']
+        print(access_token)
+        tok = jwt.decode(access_token, key=SECRET_KEY, algorithm='HS256')
+        pk = tok.get('user_id')
+        user = get_object_or_404(Users, pk=pk)
     except:
         return Response({"message": "acceess 토큰 필요함. 로그인 요구"})
-    store_num = Stores.objects.count() + 1
-    random_num = random.randrange(1, store_num)
-    store = Stores.objects.get(id=random_num)
-    store = StoreRandomSerializer(store)
-    return Response({"random_sotre": store.data})
+    if user is not None:
+        store_num = Stores.objects.count() + 1
+        random_num = random.randrange(1, store_num)
+        store = Stores.objects.get(id=random_num)
+        store = StoreRandomSerializer(store)
+        return Response({"random_sotre": store.data})
 
 
 @api_view(['GET', 'POST'])
@@ -102,7 +110,6 @@ def edit(request):
         data['address'] = places['road_address_name']
         data['longitude'] = places['x']
         data['latitude'] = places['y']
-        data['time'] = NULL
         data['phone_number'] = places['phone']
 
         img_folder_path = r".\static\selenium_images"
@@ -120,11 +127,9 @@ def edit(request):
         elem.send_keys(Keys.RETURN)
 
         images = driver.find_elements(By.CSS_SELECTOR, ".rg_i.Q4LuWd")
-
         image_url = {}
         for i in range(10):
             try:
-
                 images[i].click()
                 time.sleep(0.5)
                 imgUrl = driver.find_element(
@@ -137,6 +142,7 @@ def edit(request):
                 print(e)
 
         driver.close()
+
         return render(request, 'index2.html', {'info': data, 'image': image_url})
 
 
@@ -144,22 +150,20 @@ def edit(request):
 def save(request):
     info = request.POST.get('info').replace("'", "\"")
     info = json.loads(info)
+    print(info)
     image = request.POST.get('image').replace("'", "\"")
     image = json.loads(image)
     user = request.POST.get('user')
+    image1 = request.POST.get('image1')
+    image2 = request.POST.get('image2')
+    image3 = request.POST.get('image3')
+    image1 = image[image1]
+    image2 = image[image2]
+    image3 = image[image3]
 
+    comment = request.POST.get('comment')
     user = Users.objects.get(username=user)
-    Stores.objects.create(
-    image1=request.POST.get('image1')
-    image2=request.POST.get('image2')
-    image3=request.POST.get('image3')
-    image1=image[image1]
-    image2=image[image2]
-    image3=image[image3]
-
-    comment=request.POST.get('comment')
-    user=Users.objects.get(username=user)
-    store=Stores.objects.create(
+    store = Stores.objects.create(
         store_name=info['store_name'],
         main_menu=request.POST.get('main_menu'),
         address=info['address'],
@@ -168,8 +172,6 @@ def save(request):
         time=request.POST.get('time'),
         phone_number=info["phone_number"],
         user=user,
-        category=request.POST.get('category')
-
         category=request.POST.get('category'),
         admin_comment=comment
     )
@@ -178,14 +180,15 @@ def save(request):
     return redirect('edit')
 
 
-@ api_view(['GET'])
-def stores_information(request, store_id):
+@api_view(['GET'])
+def stores_information(request):
     if request.method == "GET":
         try:
-            store=Stores.objects.get(id=store_id)
-            store_info=Stores_Information(store)
-            images=Images.objects.get(store=store)
-            images=Serializers_Images(images)
+            store_id = request.GET.get('store_id')
+            store = Stores.objects.get(id=store_id)
+            store_info = Stores_Information(store)
+            images = Images.objects.get(store=store)
+            images = Serializers_Images(images)
             return Response({"store_information": store_info.data, "store_images": images.data})
         except:
             return Response({"message": "error"})
