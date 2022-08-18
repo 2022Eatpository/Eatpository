@@ -10,11 +10,7 @@ import DetailAPI from "./../API/DetailAPI";
 const { kakao } = window;
 const Map = () => {
 
-  const [Name, setName ]= useState(); 
-  const[Menu,setMenu]=useState();
-  const[Address,setAddress]=useState();
-  const[Time,setTime]=useState('');
-  const[Res,setRes]=useState("");
+
 
   const [storeList, setStorelist] = useState(
     JSON.parse(sessionStorage.getItem("result"))
@@ -25,13 +21,10 @@ const Map = () => {
   const [categoryList, setCategorylist] = useState(
     JSON.parse(sessionStorage.getItem("categorykey"))
   );
-  const[detail,setDetail]=useState(
-    JSON.parse(sessionStorage.getItem("detail"))
-  );
   const [result, setResult] = useState(
     (editorList + categoryList).split("").map(Number)
   );
-  
+  const[store,setStore]=useState([]);
   // 첫 스위치 초기화
   useEffect(() => {
     for (let i = 0; i < 8; i++) {
@@ -64,16 +57,18 @@ const Map = () => {
   };
   
 
-  
+
+
   const number = storeList.length;
   const listitems = storeList.map((store) => {
     return (
       <div className="lists" key={store.id}>
-        <button className="store_name">{store.store_name} </button>
+        <div className="store_name">{store.store_name} </div>
         <div className="main_menu">{store.main_menu}</div>
       </div>
     );
   });
+  
   //console.log(storeList);
   // 지도와 마커를 생성합니다
   useEffect(() => {
@@ -94,34 +89,37 @@ const Map = () => {
     imageSize = new kakao.maps.Size(48, 48),
     imageOption = { offset: new kakao.maps.Point(10, 48) };
     
-    var content =
-    '<div class="infoWindow">' +
+    
+    // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+    
+    var content='<div class="infoWindow">' +
     ' <div class="title">' +
     '  <div class="storeName"> ' +
-    detail.store_name +
+    store.store_name +
     " </div>" +
     '  <div class="categoryText"> ' +
-    detail.main_menu +
+    store.main_menu +
     " </div>" +
     "</div>" +
     '  <div class="addressText"> ' +
-    detail.address +
+    store.address +
     " </div>" +
-    "<button"+
-    ' class="more">' +
-    "자세히 보기" +
-    "</button>" +
+    '  <div class="addressText"> ' +
+    store.time +
+    " </div>"+
+    '  <div class="addressText"> ' +
+    store.admin_comment +
+    " </div>"
+    +
     "</div>";
-  
-  // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-  
+    
     for (var i = 0; i < storeList.length; i++) {
       var storeId = storeList[i].id;
       var markerpos = new kakao.maps.LatLng(
         storeList[i].latitude,
         storeList[i].longitude
-      );
-
+        );
+        
       if (storeList[i].user == 2) {
         var markerImage = new kakao.maps.MarkerImage(
           imageSrc[0],
@@ -154,29 +152,32 @@ const Map = () => {
         image: markerImage,
         id: storeId,
       });
-      
       marker.id = storeId;
-      //marker.setMap(map);
-
+      marker.setMap(map);
+      
       
       // detail window를 위한 state
       
       
       var infowindow = new kakao.maps.CustomOverlay({
-        content: content,
         position: marker.getPosition(),
-        id: storeId,
+        id: marker.id,
+        content:content,
       });
       
       
       (function (marker, infowindow) {
         // 마커에 마우스 이벤트를 등록합니다
         kakao.maps.event.addListener(marker, "click", function () {
-          // 마커에 마우스 클릭 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다
-          getDetail(marker.id);
+          DetailAPI(marker.id).then((response) => {
+            setStore(response.store_information);
+           
 
+          })
+          // 마커에 마우스 클릭 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다
+          
           infowindow.setMap(map, marker);
-          //map.setCenter(marker.getPosition());
+          // /map.setCenter(marker.getPosition());
         });
         
         // 마커에 마우스아웃 이벤트를 등록합니다
@@ -186,22 +187,17 @@ const Map = () => {
         });
       })(marker, infowindow);
     }
-  }, [detail.store_name,storeList]);
+  }, [store.store_name,storeList]);
   
-  function getDetail (id) {
-    DetailAPI(id).then((response) => {
-      setDetail(JSON.parse(sessionStorage.getItem("detail")));
-
+  console.log(store);
       // setMenu(menu);
       // setAddress(address);
       // setTime(time);
     
       
       
-    });
     
-  }
-  console.log(detail.store_name);
+  
  
 
 
