@@ -1,7 +1,7 @@
 import random
 from django.shortcuts import render
-from stores.serializers import StoreSerializer, StoreRandomSerializer, Stores_Information
-from .models import Stores
+from stores.serializers import StoreSerializer, StoreRandomSerializer, Stores_Information, Serializers_Images
+from .models import Images, Stores
 from accounts.models import Users
 from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
@@ -13,7 +13,14 @@ from asyncio.windows_events import NULL
 import requests
 from .secrets import KAKAO_API_KEY
 import json
-# Create your views here.
+import selenium
+from selenium import webdriver
+from urllib.request import urlopen
+from selenium.webdriver.common.keys import Keys
+import time
+import urllib.request
+import os
+from selenium.webdriver.common.by import By
 
 
 @api_view(['GET'])
@@ -77,6 +84,7 @@ def edit(request):
     elif request.method == "POST":
         store = request.POST.get("store_name")
         searching = '홍대' + store
+
         url = 'https://dapi.kakao.com/v2/local/search/keyword.json?query={}'.format(
             searching)
         headers = {
@@ -86,6 +94,7 @@ def edit(request):
             places = requests.get(url, headers=headers).json()['documents'][0]
         except:
             return render(request, 'index2.html', {"message": "식당 정보를 불러올 수 없음"})
+
         data = {}
 
         data['id'] = places['id']
@@ -96,18 +105,59 @@ def edit(request):
         data['latitude'] = places['y']
         data['time'] = NULL
         data['phone_number'] = places['phone']
-        data['image'] = NULL
-        return render(request, 'index2.html', {'info': data})
+
+        img_folder_path = r".\static\selenium_images"
+
+        if not os.path.isdir(img_folder_path):
+            os.mkdir(img_folder_path)
+
+        # 노션에 있는 크롬 드라이버 설치 후 C 드라이브에 저장
+        driver = webdriver.Chrome(r"C:\chromedriver.exe")
+        driver.get("https://www.google.co.kr/imghp?hl=ko&ogbl")
+
+        search = "홍대" + store
+        elem = driver.find_element(By.NAME, "q")
+        elem.send_keys(search)
+        elem.send_keys(Keys.RETURN)
+
+        images = driver.find_elements(By.CSS_SELECTOR, ".rg_i.Q4LuWd")
+        image_url = {}
+        for i in range(10):
+            try:
+
+                images[i].click()
+                time.sleep(0.5)
+                imgUrl = driver.find_element(
+                    By.XPATH, "//*[@id='Sva75c']/div/div/div[3]/div[2]/c-wiz/div/div[1]/div[1]/div[3]/div/a/img").get_attribute('src')
+                # urllib.request.urlretrieve(
+                #     imgUrl, f"{img_folder_path}/{places['id']}_{i+1}.jpg")
+                # print(f"Image saved: {places['id']}_{i+1}.jpg")
+                image_url[str(i+1)] = imgUrl
+            except Exception as e:
+                print(e)
+
+        driver.close()
+
+        return render(request, 'index2.html', {'info': data, 'image': image_url})
 
 
 @api_view(['POST'])
 def save(request):
     info = request.POST.get('info').replace("'", "\"")
     info = json.loads(info)
+    image = request.POST.get('image').replace("'", "\"")
+    image = json.loads(image)
     user = request.POST.get('user')
-    print(user)
+    image1 = request.POST.get('image1')
+    image2 = request.POST.get('image2')
+    image3 = request.POST.get('image3')
+    image1 = image[image1]
+    image2 = image[image2]
+    image3 = image[image3]
+
+    comment = request.POST.get('comment')
     user = Users.objects.get(username=user)
-    Stores.objects.create(
+    store = Stores.objects.create(
         store_name=info['store_name'],
         main_menu=request.POST.get('main_menu'),
         address=info['address'],
@@ -116,13 +166,14 @@ def save(request):
         time=request.POST.get('time'),
         phone_number=info["phone_number"],
         user=user,
-        category=request.POST.get('category')
+        category=request.POST.get('category'),
+        admin_comment=comment
     )
+    Images.objects.create(image1=image1, image2=image2,
+                          image3=image3, store=store)
     return redirect('edit')
 
-
 # 가게정보
-
 @api_view(['GET'])
 def stores_information(request, store_id):
     if request.method == "GET":
@@ -132,4 +183,9 @@ def stores_information(request, store_id):
             return Response({"store_information": store.data})
         except Exception as e:
             print(e)
+            store_info = Stores_Information(store)
+            images = Images.objects.get(store=store)
+            images = Serializers_Images(images)
+            return Response({"store_information": store_info.data, "store_images": images.data})
+        except:
             return Response({"message": "error"})
