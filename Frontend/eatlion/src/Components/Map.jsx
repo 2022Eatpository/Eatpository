@@ -25,6 +25,7 @@ const Map = () => {
     (editorList + categoryList).split("").map(Number)
   );
   const[store,setStore]=useState([]);
+  const[image,setImage]=useState('');
   // 첫 스위치 초기화
   useEffect(() => {
     for (let i = 0; i < 8; i++) {
@@ -171,6 +172,7 @@ const Map = () => {
         kakao.maps.event.addListener(marker, "click", function () {
           DetailAPI(marker.id).then((response) => {
             setStore(response.store_information);
+            setImage(response.store_images);
            
 
           })
@@ -190,6 +192,7 @@ const Map = () => {
   }, [store.store_name,storeList]);
   
   console.log(store);
+  console.log(image);
       // setMenu(menu);
       // setAddress(address);
       // setTime(time);
