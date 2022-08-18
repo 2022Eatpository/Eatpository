@@ -9,13 +9,12 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-from datetime import datetime
 import os
 import json
 from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
-from .secrets import *
 import datetime
+from .secrets import MY_SECRET_KEY
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -69,7 +68,9 @@ AUTH_USER_MODEL = 'accounts.User'
 REST_FRAMEWORK = {
     # 기존에 있던 코드
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+
     ]
     # # 로그인 여부 확인
     # 'DEFAULT_PERMISSION_CLASSES': (
@@ -83,20 +84,13 @@ REST_FRAMEWORK = {
     # ),
 }
 
-# JWT_AUTH = {
-# 'JWT_SECRET_KEY': MY_SECRET_KEY,
-# JWT 암호화에 사용되는 알고리즘
-# 'JWT_ALGORITHM': 'HS256',
-# JWT 토큰을 갱신 여부
-# 'JWT_ALLOW_REFRESH': True,
-# # JWT 토큰의 유효 기간
-# 'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
-# # JWT 토큰 갱신의 유효기간
-# 'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
-# }
-
-JWT_SECRET_KEY = MY_SECRET_KEY
-JWT_ALGORITHM = 'HS256'
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
+    'SIGNING_KEY': SECRET_KEY,
+    'ALGORITHM': 'HS256',
+    'AUTH_HEADER_TYPES': ('JWT',),
+}
 
 
 MIDDLEWARE = [
