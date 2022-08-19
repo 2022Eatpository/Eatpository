@@ -56,7 +56,7 @@ const Map = () => {
   const listitems = storeList.map(store => {
     return (
       <div className="lists" key={store.id}>
-        <button className="store_name">{store.store_name} </button>
+        <div className="store_name">{store.store_name} </div>
         <div className="main_menu">{store.main_menu}</div>
       </div>
     );
@@ -213,6 +213,8 @@ const Map = () => {
         position: marker.getPosition(),
         clickable: true,
         id: marker.id,
+        xAnchor:0.46,
+        yAnchor: 1.4,
         //content: content
       });
       (function(marker, infowindow) {
@@ -224,26 +226,26 @@ const Map = () => {
             // 기본 레이아웃 세팅
             infowindow.setContent(
               '<div class="infoWindow">' +
-                ' <div class="title">' +
+                ' <div class="detailTitle">' +
                 '  <div class="storeName"> ' +
                 response.store_information.store_name +
                 " </div>" +
-                '  <div class="categoryText"> ' +
-                response.store_information.category +
-                " </div>" +
+                ' <div class="categoryText"> ' +
+                response.store_information.main_menu +
                 "</div>" +
+                " </div>" +
+                '<div class="subDetail">' +
                 '  <div class="addressText"> ' +
                 response.store_information.address +
                 " </div>" +
-                '  <div class="addressText"> ' +
-                response.store_information.admin_comment +
-                " </div>" +
-                '  <div class="addressText"> ' +
-                response.store_information.phone +
-                " </div>" +
-                '<button id="more" onClick="detailHandler("'+
-                marker.id +
-                ')">'+
+                // '  <div class="addressText"> ' +
+                // response.store_information.admin_comment +
+                // " </div>" +
+                // '  <div class="addressText"> ' +
+                // response.store_information.phone +
+                // " </div>" +
+                "</div>" +
+                '<button id="more">'+ 
                 '자세히보기'+
                 '</button>'+
                 "</div>"
@@ -258,8 +260,7 @@ const Map = () => {
           //addEventHandler(content, "Click", onClick);
 
           kakaoMap.setCenter(marker.getPosition());
-        });
-        console.log(detail);
+        }); 
 
         // 마커에 마우스아웃 이벤트를 등록합니다
         kakao.maps.event.addListener(kakaoMap, "click", function() {
@@ -302,16 +303,16 @@ const Map = () => {
         <div className="sectionSecond">
           <p>원하는 음식 종류를 선택해주세요</p>
           <div className="cardsSection">
-            <button onClick={editorHandler} className="card" id="4">
+            <button onClick={editorHandler} className="card korean" id="4">
               한식
             </button>
-            <button onClick={editorHandler} className="card" id="5">
+            <button onClick={editorHandler} className="card chinese" id="5">
               중식
             </button>
-            <button onClick={editorHandler} className="card" id="6">
+            <button onClick={editorHandler} className="card japanese" id="6">
               일식
             </button>
-            <button onClick={editorHandler} className="card" id="7">
+            <button onClick={editorHandler} className="card dining" id="7">
               양식
             </button>
           </div>

@@ -2,8 +2,8 @@
 
 .navSection {
     width: 100%;
-    height: 56px;
-    box-shadow: 3px 6px 16px #f2f2f2;
+    height: 48px;
+    box-shadow: 3px 6px 16px #f2f2f2;  
 }
 
 img {
@@ -13,9 +13,10 @@ img {
 }
 
 .nav {
+    height: inherit;
     display: flex;
     flex-direction: row;
-    padding: 0 4rem 0 4rem;
+    padding: 0 3.4rem 0 3.4rem;
     justify-content: space-between;
     align-items: center;
     margin: 0 auto;
@@ -23,6 +24,7 @@ img {
 
 .nav-btns {
     align-items: center; 
+    justify-content: center;
     margin: 16px;
 }
 

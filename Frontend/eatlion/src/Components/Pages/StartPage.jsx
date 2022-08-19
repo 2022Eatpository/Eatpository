@@ -6,11 +6,8 @@ import {
   Navigate,
   useNavigate,
 } from "react-router-dom";
-import "../../Css/Start.css";
-import editor1 from "../../Img/editor1.png";
-import editor2 from "../../Img/editor2.png";
-import editor3 from "../../Img/editor3.png";
-import editor4 from "../../Img/editor4.png";
+import "../../Css/Start.css";  
+import seoul from "../../Img/seoul.png";
 import axios from "axios";
 import ListAPI from "../../API/ListAPI";
 function StartPage() {
@@ -85,7 +82,7 @@ function StartPage() {
     <div className="start page">
       <div className="titleWrap">
         멋사먹자는 <br />
-        6명의 홍대생 에디터가 선정한 홍대 맛집을 소개하는 서비스 입니다.
+        4명의 홍대생 에디터가 선정한 홍대 맛집을 소개하는 서비스 입니다.
       </div>
       <div className="subText">
         홍대생 에디터가 선정한 맛집 리스트를 확인하고, 가고 싶은 식당을 선택해
@@ -131,6 +128,7 @@ function StartPage() {
           에디터 선택 완료
         </button>
       </div>
+      <img style={{overflow:'visible', width: "100vw", height:'100vh'}} src={seoul} alt="" />
     </div>
   );
 }
