@@ -1,17 +1,38 @@
-from django.shortcuts import render, redirect
-from .models import Users
-from django.contrib.auth import login, logout
-from django.contrib import auth
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
-from rest_framework import status
-from django.http import JsonResponse
-import json
-from datetime import datetime, timedelta
-from Eatpository.settings import JWT_ALGORITHM, JWT_SECRET_KEY
 import jwt
+import json
+from Eatpository.settings import SECRET_KEY
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.shortcuts import render, redirect, get_object_or_404
+from rest_framework.authtoken.models import Token
+from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from django.contrib import auth
+from django.contrib.auth import login, logout
+from .models import Users
+from Eatpository import settings
+
+
+import random
+import string
+
+
+#from Eatpository.settings import JWT_ALGORITHM, JWT_SECRET_KEY
 # Create your views here.
+@api_view(['POST'])
+def loginCheck(request):
+
+    access_token = request.META['HTTP_AUTHORIZATION']
+
+    access_token = access_token[7:]
+    access_token = jwt.decode(access_token, key=SECRET_KEY, algorithm='HS256')
+    pk = access_token.get('user_id')
+    try:
+        user = get_object_or_404(Users, pk=pk)
+    except:
+        return Response({'message': 'user does not exist'})
+    if user is not None:
+        return Response({'message': 'success'})
 
 
 @api_view(['POST'])
@@ -28,12 +49,12 @@ def signup(request):
             phone_number=phone_number,
             role=False)
         user.save()
-        payload = {"username": username}
-        access_token = jwt.encode(
-            payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM).decode("utf-8")
-        # login(request,user)
+        # payload = {"username": username}
+        # access_token = jwt.encode(
+        #     payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM).decode("utf-8")
+        auth.login(request, user)
         ##token = Token.objects.get_or_create(user=user)
-        return Response({"Token": access_token})
+        return Response({"message": "회원가입 성공"})
 # def signup(request):
 #     if request.method == "GET":
 #         return render(request, 'signup.html')
@@ -85,10 +106,19 @@ def user_login(request):
             user = Users.objects.get(username=username)
         except:
             return Response({"message": "error"})
-        if user.password == password:
-            login(request, user)
-            token = Token.objects.get_or_create(user=user)
-            return Response({"Token": token[0].key})
+        if auth.authenticate(request, username=username, password=password):
+
+            auth.login(request, user)
+            token = RefreshToken.for_user(user)
+            refresh_token = str(token)
+            access_token = str(token.access_token)
+            response = Response(
+                {"message": "로그인 성공!", "access_token": access_token, "refresh_token": refresh_token})
+
+            #token = Token.objects.get_or_create(user=user)
+
+            return response
+
         else:
             return Response({"message": "not correct password"})
 # def user_login(request):
@@ -150,12 +180,22 @@ def user_password(request):
         try:
             user_id = request.GET.get("user_id")
             phone_number = request.GET.get("phone_number")
+
             user = Users.objects.get(username=user_id)
         except:
             return Response({"message": "user does not exist : except occurs"})
         if user is not None:
             if user.phone_number == phone_number:
-                return Response({"password": user.password})
+                new_pw = request.GET.get("new_password")
+
+                # new_pw = ""
+                # word = string.ascii_letters + string.digits + string.punctuation
+                # for i in range(8):
+                #     new_pw = new_pw + random.choice(word)
+                user.set_password(new_pw)
+                user.save()
+                auth.login(request, user)
+                return Response({"message": "비밀번호 변경"})
             else:
                 return Response({"message": "user does not exist : phone_num not correct"})
         else:
