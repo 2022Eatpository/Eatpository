@@ -18,7 +18,12 @@ const DetailAPI = async (id) => {
       }
     )
     .then((response) => {
+<<<<<<< HEAD
       storeDetail = response.data;
+=======
+      
+      storeDetail = response.data.store_information;
+>>>>>>> parent of 0e0de5b ([FIX] : fix layered map rendering issue)
       sessionStorage.setItem("detail",JSON.stringify(storeDetail));
     })
     .catch(function (error) {
