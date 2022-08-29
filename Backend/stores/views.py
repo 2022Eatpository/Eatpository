@@ -8,8 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import status
-from django.http import JsonResponse
-from asyncio.windows_events import NULL
+from django.http import JsonResponse 
 import requests
 from .secrets import KAKAO_API_KEY
 import json
@@ -192,6 +191,7 @@ def stores_information(request):
             print(e)
             store_info = Stores_Information(store)
             images = Images.objects.get(store=store)
+
             images = Serializers_Images(images)
             return Response({"store_information": store_info.data, "store_images": images.data})
         except:

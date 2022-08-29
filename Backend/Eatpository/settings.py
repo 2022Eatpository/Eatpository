@@ -32,7 +32,7 @@ SECRET_KEY = MY_SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -74,8 +74,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=1),
-    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(seconds=10),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(seconds=45),
     'SIGNING_KEY': SECRET_KEY,
     'ALGORITHM': 'HS256',
     'AUTH_HEADER_TYPES': ('JWT',),
@@ -96,7 +96,7 @@ MIDDLEWARE = [
 ]
 
 # CORS 세팅 (CORS_ORIGIN_WHITELIST, CORS_ALLOW_CREDENTIALS)
-CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000', 'http://localhost:3000']
+CORS_ORIGIN_WHITELIST = ['http://localhost:3000', 'http://127.0.0.1:3000']
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_METHODS = (

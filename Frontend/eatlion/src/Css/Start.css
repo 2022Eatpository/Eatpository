@@ -2,6 +2,46 @@
 
 img{
     object-fit: fill;
+} 
+
+h1{
+    font-size: 1rem;
+    color: white;
+    background-color: #2B2C32; 
+    padding: 1rem 4rem;
+}
+
+span{
+    position: absolute;
+    pointer-events: none;
+    padding: 2rem;
+    right: 0;
+    bottom: 0;
+}
+
+.edit{
+    margin: 1.4rem 0 ;
+    font-size: 1.2rem;
+    color: #f4f4f4;
+}
+
+.subTextStart{ 
+    font-size: 12px; 
+    line-height: 150%; 
+    font-weight:200;
+    color: #f4f4f4;
+}
+
+.page{
+    display: grid;
+    place-items: center;
+}
+
+.back{ 
+    width: 100vw;
+    height: 100vh; 
+    background-image: url(../Img/seoul.png);
+    background-repeat: no-repeat;
 }
 
 .btnSection{
@@ -13,8 +53,8 @@ img{
 
 button.editor {
     border-radius: 8px;
-    width: 350px;
-    height: 264px;
+    width: 21rem;
+    height: 16rem;
     min-width: 32px;
     min-height: 24px;
     overflow: hidden;
@@ -62,3 +102,33 @@ button.editor {
     background-color: #0D6EFD;
 
 } 
+
+.a{ 
+    background-image: url(../Img/editor1.png);
+    background-repeat: no-repeat;
+}
+.b{ 
+    background-image: url(../Img/editor2.png);
+    background-repeat: no-repeat;
+}
+.c{ 
+    background-image: url(../Img/editor3.png);
+    background-repeat: no-repeat;
+}
+.d{ 
+    background-image: url(../Img/editor4.png);
+    background-repeat: no-repeat;
+}
+
+
+@media screen and (max-width: 1440px) {
+	button.editor {
+        border-radius: 8px;
+        width: 16rem;
+        height: 12rem; 
+    }
+
+    .page{
+        top: 64px;
+    }
+}
