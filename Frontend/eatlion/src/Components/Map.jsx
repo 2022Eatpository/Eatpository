@@ -20,11 +20,8 @@ const Map = () => {
   const [result, setResult] = useState(
     (editorList + categoryList).split("").map(Number)
   );
-
-  const [isMarked, setMarkers] = useState(false); // marker가 표시되었는지 체크해서, true일 경우 marker 삭제
+ 
   const [kakaoMap, setKakaoMap] = useState(null);
-
-  let markers = [];
 
   const container = useRef();
   // 첫 스위치 초기화
@@ -35,7 +32,7 @@ const Map = () => {
       }
     }
   }, [result]);
-
+  
   // editor 혹은 category 클릭 시 result 변화
   const editorHandler = (e) => {
     let id = e.target.id;
@@ -50,9 +47,9 @@ const Map = () => {
       setStorelist(JSON.parse(sessionStorage.getItem("result")));
     });
   };
-
+  
   const number = storeList.length;
-  const listitems = storeList.map((store) => {
+  const listitems = storeList.map(store => {
     return (
       <div className="lists" key={store.id}>
         <div className="store_name">{store.store_name} </div>
@@ -60,35 +57,53 @@ const Map = () => {
       </div>
     );
   });
-
+  
+  
+  // const closeHandler= (e)=>{
+  //  document.getElementById('close').addEventListener('click',function(){
+  //   let parents=document.querySelector("infowindow");
+  //   parents.remove();
+  //   console.log(parents);
+  //  })
+  // }
   // 지도와 마커를 생성합니다
   useEffect(() => {
+    //const container = document.getElementById("map");
     const options = {
       center: new kakao.maps.LatLng(37.55036, 126.92544),
-      level: 3,
+      level: 3
     };
     const map = new kakao.maps.Map(container.current, options);
     setKakaoMap(map);
   }, [container]);
+  
 
+  
   useEffect(() => {
+    
     if (kakaoMap === null) {
       return;
     }
-    if (isMarked === true) {
-      markers.setMap(kakaoMap, null);
-    }
+    
+    
+    // save center position
+    // const center = kakaoMap.getCenter();
+    // relayout and...
+    // kakaoMap.relayout();
+    // // restore
+    // kakaoMap.setCenter(center);
     const imageSrc = [
-        process.env.PUBLIC_URL + `/assets/mini1.png`,
-        process.env.PUBLIC_URL + `/assets/mini2.png`,
-        process.env.PUBLIC_URL + `/assets/mini3.png`,
-        process.env.PUBLIC_URL + `/assets/mini4.png`,
-        process.env.PUBLIC_URL + `/assets/mini5.png`,
-      ],
-      imageSize = new kakao.maps.Size(48, 48),
-      imageOption = { offset: new kakao.maps.Point(10, 48) };
-
+      process.env.PUBLIC_URL + `/assets/mini1.png`,
+      process.env.PUBLIC_URL + `/assets/mini2.png`,
+      process.env.PUBLIC_URL + `/assets/mini3.png`,
+      process.env.PUBLIC_URL + `/assets/mini4.png`,
+      process.env.PUBLIC_URL + `/assets/mini5.png`
+    ],
+    imageSize = new kakao.maps.Size(48, 48),
+    imageOption = { offset: new kakao.maps.Point(10, 48) };
+    
     // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+    
     for (var i = 0; i < storeList.length; i++) {
       var storeId = storeList[i].id;
       var markerpos = new kakao.maps.LatLng(
@@ -96,13 +111,13 @@ const Map = () => {
         storeList[i].longitude
       );
 
-      if (storeList[i].user === 6) {
+      if (storeList[i].user === 2) {
         var markerImage = new kakao.maps.MarkerImage(
           imageSrc[0],
           imageSize,
           imageOption
         );
-      } else if (storeList[i].user === 5) {
+      } else if (storeList[i].user === 3) {
         markerImage = new kakao.maps.MarkerImage(
           imageSrc[1],
           imageSize,
@@ -114,33 +129,35 @@ const Map = () => {
           imageSize,
           imageOption
         );
-      } else if (storeList[i].user === 3) {
-        markerImage = new kakao.maps.MarkerImage(
+      } else if (storeList[i].user === 5) {
+      markerImage = new kakao.maps.MarkerImage(
           imageSrc[3],
           imageSize,
           imageOption
         );
       }
-
+      
       var marker = new kakao.maps.Marker({
         map: kakaoMap,
         position: markerpos,
         image: markerImage,
-        id: storeId,
+        id: storeId
       });
       marker.id = storeId;
+
 
       var infowindow = new kakao.maps.CustomOverlay({
         position: marker.getPosition(),
         clickable: true,
         id: marker.id,
-        removable: true,
+        removable:true
         //content: content
       });
-      (function (marker, infowindow) {
+      (function(marker, infowindow) {
         // 마커에 마우스 이벤트를 등록합니다
-        kakao.maps.event.addListener(marker, "click", function () {
-          DetailAPI(marker.id).then((response) => {
+        kakao.maps.event.addListener(marker, "click", function() {
+        
+          DetailAPI(marker.id).then((response) => {  
             // setStore(response.store_information);
             // setImage(response.store_images);
             // 기본 레이아웃 세팅
@@ -153,7 +170,7 @@ const Map = () => {
                 '  <div class="categoryText"> ' +
                 response.store_information.category +
                 " </div>" +
-                '<button id="close" title="닫기"></button>' +
+                `<button id="close" title="닫기"></button>`+
                 "</div>" +
                 '  <div class="addressText"> ' +
                 response.store_information.main_menu +
@@ -167,12 +184,12 @@ const Map = () => {
                 '  <div class="addressText"> ' +
                 response.store_information.time +
                 " </div>" +
-                '<div class="imageSection">' +
-                `<img src=${response.store_images.image1}>` +
-                "</img>" +
-                `<img src=${response.store_images.image2}>` +
-                "</img>" +
-                "</div>" +
+                '<div class="imageSection">'+
+               `<img src=${response.store_images.image1}>`+
+               '</img>'+ 
+               `<img src=${response.store_images.image2}>`+
+               '</img>'+
+               '</div>'+
                 "</div>"
             );
           });
@@ -180,28 +197,19 @@ const Map = () => {
           // infowindow.setContent(closeHandler());
           infowindow.setMap(kakaoMap, marker);
           kakaoMap.setCenter(marker.getPosition());
+        
         });
-
+      
         // 마커에 마우스아웃 이벤트를 등록합니다
-        kakao.maps.event.addListener(kakaoMap, "click", function () {
+        kakao.maps.event.addListener(kakaoMap, "click", function() {
           infowindow.setMap(null);
+          marker.setMap(null);
         });
+       
       })(marker, infowindow);
-      markers.push(marker);
     }
-    console.log(markers);
-    setMarkers((isMarked) => !isMarked);
-    console.log(isMarked);
-  }, [kakaoMap, storeList]);
+  }, [kakaoMap,storeList]);
   // 리스트를 생성합니다
-
-  useEffect(() => {
-    console.log("setMarkers dep");
-
-    if (isMarked === true) {
-      markers.setMap(kakaoMap, null);
-    }
-  }, [setMarkers]);
 
   return (
     <div>
@@ -209,7 +217,7 @@ const Map = () => {
         id="map"
         style={{
           width: "100vw",
-          height: "calc(100vh - 48px)",
+          height: "calc(100vh - 48px)"
         }}
         ref={container}
       ></div>

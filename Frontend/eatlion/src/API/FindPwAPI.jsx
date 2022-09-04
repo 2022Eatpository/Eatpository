@@ -1,28 +1,21 @@
 import axios from "axios";
 
-const FindPwAPI = async (userid, userphone, NewPw) => {
-  let findpw = "";
-  await axios
-    .get(
-      "https://mygongjoo.pythonanywhere.com/users/password/",
-      {
-        params: {
-          user_id: userid,
-          phone_number: userphone,
-          new_password: NewPw,
-        },
-      },
+const FindPwAPI = async (userid,userphone,NewPw) => {
+    let findpw=''
+    await axios
+    .get("http://localhost:8000/users/password/",{
 
-      { withCredentials: true }
-    )
-    .then((response) => {
-      findpw = response.data.message;
-      // response.data.password;
+           params:{user_id:userid,phone_number:userphone,new_password: NewPw}}
+            
+    ,{withCredentials:true,})
+    .then((response)=>{
+        findpw=response.data.message;
+        // response.data.password;
     })
-    .catch(function (error) {
-      console.error(error);
+    .catch(function(error){
+        console.error(error);
     });
-  return findpw;
+    return findpw
 };
 
 export default FindPwAPI;

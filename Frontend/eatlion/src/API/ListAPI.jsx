@@ -6,7 +6,7 @@ const ListAPI = async (resultnum, categorynum) => {
   let store = "";
   await axios
     .get(
-      "https://mygongjoo.pythonanywhere.com/stores/selected/",
+      "http://localhost:3000/stores/selected/",
       {
         params: { editor: resultnum, category: categorynum },
       },
@@ -17,8 +17,8 @@ const ListAPI = async (resultnum, categorynum) => {
     .then((response) => {
       store = response.data.stores;
       //브라우저DB에 반환하는 response를 저장해뒀다가 main으로 돌아올때 결과를 유지합니다.
-      sessionStorage.setItem("result", JSON.stringify(store));
-    })
+      sessionStorage.setItem('result',JSON.stringify(store)); 
+      })
     .catch(function (error) {
       console.error(error);
     });
