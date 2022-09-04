@@ -4,7 +4,7 @@ const FindIdAPI = async (userphone) => {
   let findid = "";
   await axios
     .get(
-      "http://localhost:8000/users/user-id/",
+      "https://mygongjoo.pythonanywhere.com/users/user-id/",
       { params: { phone_number: userphone } },
 
       { withCredentials: true }
