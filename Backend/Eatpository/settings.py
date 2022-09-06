@@ -178,8 +178,8 @@ USE_TZ = True
 # STATICFILES_DIRS=[
 #     os.path.join(BASE_DIR,'static','images')
 # ]
-# # STATIC_ROOT 세팅
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static') ## 모든 정적 파일들을 한 곳으로 모아둘 경로
+# STATIC_ROOT 세팅
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # 모든 정적 파일들을 한 곳으로 모아둘 경로
 
 STATIC_URL = '/static/'
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
