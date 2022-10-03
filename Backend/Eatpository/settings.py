@@ -15,6 +15,8 @@ from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
 import datetime
 from .secrets import MY_SECRET_KEY
+import pymysql
+pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -131,10 +133,21 @@ WSGI_APPLICATION = 'Eatpository.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
+'''DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}'''
+#MySQl
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # engine: mysql
+        'NAME' : 'stores_stores', # DB Name
+        'USER' : 'root', # DB User
+        'PASSWORD' : 'hermione0701', # Password
+        'HOST': 'localhost',
+        'PORT': '3306', # 데이터베이스 포트
     }
 }
 

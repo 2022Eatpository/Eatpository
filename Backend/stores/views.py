@@ -179,16 +179,35 @@ def save(request):
     return redirect('edit')
 
 
+# @api_view(['GET'])
+# def stores_information(request):
+#     if request.method == "GET":
+#         try:
+#             store_id = request.GET.get('store_id')
+#             store = Stores.objects.get(id=store_id)
+#             store_info = Stores_Information(store)
+#             images = Images.objects.get(store=store)
+
+#             images = Serializers_Images(images)
+#             return Response({"store_information": store_info.data, "store_images": images.data})
+#         except:
+#             return Response({"message": "error"})
+
 @api_view(['GET'])
-def stores_information(request):
+def stores_information(request,store_id):
     if request.method == "GET":
         try:
-            store_id = request.GET.get('store_id')
+            
+            print(store_id)
             store = Stores.objects.get(id=store_id)
+            
             store_info = Stores_Information(store)
-            images = Images.objects.get(store=store)
-
-            images = Serializers_Images(images)
-            return Response({"store_information": store_info.data, "store_images": images.data})
         except:
             return Response({"message": "error"})
+        try:
+            images = Images.objects.get(store=store)
+            images = Serializers_Images(images)
+        except:
+            return Response({"store_information": store_info.data, "store_images": "no images"})
+        
+        return Response({"store_information": store_info.data, "store_images": images.data})
